@@ -1,0 +1,13 @@
+# Development dependencies for PyGit
+# Install with: pip install -r requirements-dev.txt
+
+# Testing framework
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+
+# Property-based testing
+hypothesis>=6.0.0
+
+# Optional: for faster test runs
+pytest-xdist>=3.0.0
