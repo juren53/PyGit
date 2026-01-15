@@ -11,6 +11,9 @@ from pathlib import Path
 from typing import List, Optional, Dict, Any
 import pygit
 from .clone import CloneCommand
+from .fetch import FetchCommand
+from .pull import PullCommand
+from .push import PushCommand
 from ..core.repository import Repository
 from ..utils.logging import get_logger, configure_logging
 
@@ -60,6 +63,15 @@ class PyGitCLI:
 
         # Commit command
         self._add_commit_parser(subparsers)
+
+        # Fetch command
+        self._add_fetch_parser(subparsers)
+
+        # Pull command
+        self._add_pull_parser(subparsers)
+
+        # Push command
+        self._add_push_parser(subparsers)
 
         return parser
 
@@ -117,6 +129,75 @@ class PyGitCLI:
             "--message", "-m", required=True, help="Commit message"
         )
         commit_parser.add_argument("--author", help="Override author for commit")
+
+    def _add_fetch_parser(self, subparsers):
+        """Add fetch command parser."""
+        fetch_parser = subparsers.add_parser(
+            "fetch", help="Download objects and refs from remote"
+        )
+        fetch_parser.add_argument(
+            "remote", nargs="?", default="origin", help="Remote to fetch from (default: origin)"
+        )
+        fetch_parser.add_argument(
+            "branch", nargs="?", help="Specific branch to fetch"
+        )
+        fetch_parser.add_argument(
+            "--all", action="store_true", help="Fetch all branches"
+        )
+        fetch_parser.add_argument(
+            "--prune", "-p", action="store_true", help="Remove stale remote-tracking refs"
+        )
+        fetch_parser.add_argument(
+            "--dry-run", "-n", action="store_true", help="Show what would be done"
+        )
+
+    def _add_pull_parser(self, subparsers):
+        """Add pull command parser."""
+        pull_parser = subparsers.add_parser(
+            "pull", help="Fetch and merge changes from remote"
+        )
+        pull_parser.add_argument(
+            "remote", nargs="?", default="origin", help="Remote to pull from (default: origin)"
+        )
+        pull_parser.add_argument(
+            "branch", nargs="?", help="Remote branch to pull"
+        )
+        pull_parser.add_argument(
+            "--ff-only", action="store_true", help="Only allow fast-forward merges"
+        )
+        pull_parser.add_argument(
+            "--no-ff", action="store_true", help="Create merge commit even if fast-forward"
+        )
+        pull_parser.add_argument(
+            "--rebase", "-r", action="store_true", help="Rebase instead of merge (not implemented)"
+        )
+
+    def _add_push_parser(self, subparsers):
+        """Add push command parser."""
+        push_parser = subparsers.add_parser(
+            "push", help="Push commits to remote repository"
+        )
+        push_parser.add_argument(
+            "remote", nargs="?", default="origin", help="Remote to push to (default: origin)"
+        )
+        push_parser.add_argument(
+            "branch", nargs="?", help="Branch to push"
+        )
+        push_parser.add_argument(
+            "--force", "-f", action="store_true", help="Force push (overwrite remote)"
+        )
+        push_parser.add_argument(
+            "--set-upstream", "-u", action="store_true", help="Set upstream tracking"
+        )
+        push_parser.add_argument(
+            "--dry-run", "-n", action="store_true", help="Show what would be pushed"
+        )
+        push_parser.add_argument(
+            "--all", action="store_true", help="Push all branches"
+        )
+        push_parser.add_argument(
+            "--token", help="GitHub token for authentication"
+        )
 
     def run(self, args: List[str] = None) -> int:
         """Run the CLI with given arguments."""
@@ -375,6 +456,66 @@ class PyGitCLI:
 
         except Exception as e:
             self.logger.error(f"Failed to create commit: {e}")
+            return 1
+
+    def _handle_fetch(self, args) -> int:
+        """Handle fetch command."""
+        fetch_cmd = FetchCommand()
+
+        success = fetch_cmd.fetch(
+            repo_path=".",
+            remote=args.remote,
+            branch=args.branch,
+            all_branches=args.all,
+            prune=args.prune,
+            dry_run=args.dry_run,
+        )
+
+        if success:
+            return 0
+        else:
+            return 1
+
+    def _handle_pull(self, args) -> int:
+        """Handle pull command."""
+        pull_cmd = PullCommand()
+
+        success = pull_cmd.pull(
+            repo_path=".",
+            remote=args.remote,
+            branch=args.branch,
+            ff_only=args.ff_only,
+            no_ff=args.no_ff,
+            rebase=args.rebase,
+        )
+
+        if success:
+            return 0
+        else:
+            return 1
+
+    def _handle_push(self, args) -> int:
+        """Handle push command."""
+        import os
+
+        # Get token from args or environment
+        token = args.token or os.environ.get("GITHUB_TOKEN")
+
+        push_cmd = PushCommand(github_token=token)
+
+        success = push_cmd.push(
+            repo_path=".",
+            remote=args.remote,
+            branch=args.branch,
+            force=args.force,
+            set_upstream=args.set_upstream,
+            dry_run=args.dry_run,
+            all_branches=args.all,
+        )
+
+        if success:
+            return 0
+        else:
             return 1
 
 

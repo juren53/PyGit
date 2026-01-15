@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pygit"
-version = "0.0.4"
+version = "0.0.6"
 description = "A pure Python Git implementation"
 readme = "README.md"
 license = {text = "MIT"}
@@ -53,6 +53,7 @@ addopts = [
 markers = [
     "unit: Unit tests for individual components",
     "integration: Integration tests for component interaction",
+    "property: Property-based tests using Hypothesis",
     "slow: Tests that take a long time to run",
     "network: Tests that require network access",
     "windows: Tests specific to Windows platform",

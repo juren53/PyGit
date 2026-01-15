@@ -9,6 +9,122 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.0.6] - Wed 15 Jan 2026 11:45:00 PM CST
+
+### Added
+
+- **Phase 3 Remote Operations - COMPLETE**
+  - 352 total tests (351 passed, 1 skipped)
+  - 70 new tests for remote operations
+
+- **Fetch Command (Phase 3.1)**
+  - `pygit fetch [remote] [branch]` - Download objects and refs from remote
+  - Recursive commit/tree/blob fetching via GitHub API
+  - Support for `--all` (all branches), `--prune` (remove stale refs), `--dry-run`
+  - Remote tracking refs stored in `.git/refs/remotes/<remote>/`
+  - 20 unit tests covering fetch operations
+
+- **Pull Command (Phase 3.2)**
+  - `pygit pull [remote] [branch]` - Fetch and merge changes
+  - Fast-forward merge support with working directory checkout
+  - Support for `--ff-only`, `--no-ff` flags
+  - Tracking branch detection from config
+  - Tree checkout with file creation/update
+  - 23 unit tests covering pull operations
+
+- **Push Command (Phase 3.3)**
+  - `pygit push [remote] [branch]` - Upload commits to remote
+  - GitHub Git Data API integration (blobs, trees, commits, refs)
+  - Token authentication via `--token` flag or `GITHUB_TOKEN` env var
+  - Support for `--force`, `--set-upstream`, `--dry-run`, `--all`
+  - Fast-forward detection prevents accidental overwrites
+  - Commit chain recreation on remote
+  - 27 unit tests covering push operations
+
+- **GitHub API Extensions**
+  - `_post_request()` - POST requests for write operations
+  - `_patch_request()` - PATCH requests for updates
+  - `create_blob()` - Create blob objects (base64 encoded)
+  - `create_tree()` - Create tree objects with entries
+  - `create_commit()` - Create commit objects with author/committer
+  - `create_ref()` - Create new branch references
+  - `update_ref()` - Update existing references
+  - `get_ref()` - Get SHA for a reference
+
+### Files Added
+
+- `pygit/commands/fetch.py` - Fetch command implementation
+- `pygit/commands/pull.py` - Pull command implementation
+- `pygit/commands/push.py` - Push command implementation
+- `tests/unit/commands/test_fetch.py` - Fetch unit tests (20)
+- `tests/unit/commands/test_pull.py` - Pull unit tests (23)
+- `tests/unit/commands/test_push.py` - Push unit tests (27)
+
+### Modified
+
+- `pygit/commands/main.py` - Added fetch, pull, push parsers and handlers
+- `pygit/core/github.py` - Added POST/PATCH methods and Git Data API
+
+---
+
+## [0.0.5] - Wed 15 Jan 2026
+
+### Added
+
+- **Phase 2.5 Testing Enhancement - COMPLETE**
+  - 283 total tests (282 passed, 1 skipped)
+  - 82% code coverage
+
+- **Testing Infrastructure (Phase 2.5.1)**
+  - pytest configuration with markers (unit, integration, property, slow, network)
+  - Coverage configuration with 80% threshold
+  - Test directory structure (unit/integration/property)
+  - Hypothesis integration for property-based testing
+
+- **Unit Tests (Phase 2.5.2)**
+  - 196 unit tests across all core modules
+  - Repository operations (init, object storage, HEAD management)
+  - Git objects (Blob, Tree, Commit, Tag, Author)
+  - Index operations (add, remove, save/load, write_tree)
+  - Configuration management (sections, types, scopes)
+  - GitIgnore pattern matching
+  - CLI command tests
+  - HTTP utilities and clone operations
+
+- **Integration Tests (Phase 2.5.3)**
+  - 43 integration tests for end-to-end workflows
+  - Git compatibility tests (PyGit repos readable by Git and vice versa)
+  - Round-trip tests for blob, tree, commit, index, and config
+  - Mixed workflow tests (alternating PyGit/Git operations)
+
+- **Property-Based Tests (Phase 2.5.4)**
+  - 44 property-based tests using Hypothesis
+  - Object model invariants (SHA consistency, format, uniqueness)
+  - Index operation properties (add/remove, serialization)
+  - Path handling and GitIgnore pattern properties
+  - Custom strategies for SHA1, filenames, modes, timezones
+
+### Fixed
+
+- **Empty Index File on Init:** Removed empty index file creation that caused Git to fail with "index file smaller than expected"
+- **Tree Entry Mode Serialization:** Fixed mode output from decimal (33188) to octal (100644) format
+- **Windows Executable Detection:** Added platform check to skip unreliable `os.access(X_OK)` on Windows
+- **Windows Reserved Filenames:** Added filter for reserved device names (NUL, CON, PRN, etc.) in property tests
+- **Hypothesis Deadline Issues:** Added deadline=None for I/O-bound property tests
+
+### Documentation
+
+- REPORT-Testing_Infrastructure.md - Phase 2.5.1 report
+- REPORT-Testing_UnitTests.md - Phase 2.5.2 report
+- REPORT-Testing_IntegrationTests.md - Phase 2.5.3 report
+- REPORT-Testing_PropertyTests.md - Phase 2.5.4 report
+
+### Known Limitations
+
+- Index format not fully compatible with Git's native format (workaround: use `git read-tree HEAD`)
+
+---
+
 ## [0.0.4] - Wed 14 Jan 2026 06:52:00 PM CST
 
 ### Changed

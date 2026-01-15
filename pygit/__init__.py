@@ -5,7 +5,7 @@ This package provides a complete Git replacement implemented in Python,
 starting with GitHub-only support and expanding to a comprehensive Git alternative.
 """
 
-__version__ = "0.0.4a"
+__version__ = "0.0.6"
 __author__ = "juren53"
 
 from .core.repository import Repository
