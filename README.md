@@ -1,7 +1,7 @@
 # PyGit
 
-**Version:** v0.0.3  
-**Updated:** Wed 14 Jan 2026 06:03:27 PM CST
+**Version:** v0.0.4a  
+**Updated:** Thu 15 Jan 2026 01:19:47 AM CST
 
 A pure Python Git replacement starting with GitHub-only support and expanding to a comprehensive Git alternative.
 
