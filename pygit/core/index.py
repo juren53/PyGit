@@ -6,6 +6,7 @@ including staging files, tracking changes, and preparing commits.
 """
 
 import os
+import sys
 import struct
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional, Set
@@ -238,8 +239,10 @@ class Index:
             sha1 = self.repository.store_object(blob)
 
             # Determine file mode
+            # Note: On Windows, os.access(X_OK) is unreliable (returns True for all files)
+            # so we only check executable status on Unix-like systems
             mode = IndexEntry.MODE_FILE
-            if os.access(full_path, os.X_OK):
+            if sys.platform != 'win32' and os.access(full_path, os.X_OK):
                 mode = IndexEntry.MODE_EXECUTABLE
 
             # Create index entry

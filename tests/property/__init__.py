@@ -1,1 +1,1 @@
-"""Property-based tests using hypothesis."""
+"""Property-based tests for PyGit using Hypothesis."""

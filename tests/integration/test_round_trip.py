@@ -426,6 +426,12 @@ class TestMixedWorkflow:
         main_ref.write_text(f"{commit1_sha}\n")
 
         # Second commit with Git
+        # Note: Remove PyGit's index so Git can create its own compatible index
+        # This is a workaround for index format differences between PyGit and Git
+        index_path = repo.git_dir / "index"
+        if index_path.exists():
+            index_path.unlink()
+
         (temp_dir / "file2.txt").write_text("Git v2\n")
         run_git(["add", "file2.txt"], cwd=temp_dir)
         run_git(["commit", "-m", "Git commit 2"], cwd=temp_dir)

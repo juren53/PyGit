@@ -80,8 +80,18 @@ class TreeEntry:
         self.sha1 = sha1
 
     def serialize(self) -> bytes:
-        """Serialize the tree entry."""
-        return f"{self.mode} {self.name}\0".encode() + bytes.fromhex(self.sha1)
+        """Serialize the tree entry.
+
+        Git expects mode as octal without leading zeros (e.g., '100644' not '0100644').
+        """
+        # Handle both string and integer modes
+        if isinstance(self.mode, str):
+            # Remove leading zeros from string mode
+            mode_str = self.mode.lstrip('0') or '0'
+        else:
+            # Format integer as octal string (without '0o' prefix)
+            mode_str = format(self.mode, 'o')
+        return f"{mode_str} {self.name}\0".encode() + bytes.fromhex(self.sha1)
 
 
 class Tree(GitObject):

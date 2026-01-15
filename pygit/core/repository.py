@@ -49,8 +49,8 @@ class Repository:
         (self.git_dir / "config").write_text(self._default_config())
         (self.git_dir / "description").write_text("\n")
 
-        # Create empty index file
-        (self.git_dir / "index").touch()
+        # Note: Don't create empty index file - Git expects either no index
+        # or a properly formatted one. Index will be created when needed.
 
     def _default_config(self) -> str:
         """Return default repository configuration."""

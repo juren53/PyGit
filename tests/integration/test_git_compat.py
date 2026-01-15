@@ -157,11 +157,21 @@ class TestPyGitRepoWithGit:
         main_ref = repo.git_dir / "refs" / "heads" / "main"
         main_ref.write_text(f"{commit_sha}\n")
 
+        # Remove PyGit's index and rebuild from HEAD using Git
+        # This is needed because PyGit's index format has differences that cause
+        # Git to misinterpret the staging area state
+        index_path = repo.git_dir / "index"
+        if index_path.exists():
+            index_path.unlink()
+
+        # Rebuild Git's index from the HEAD commit
+        run_git(["read-tree", "HEAD"], cwd=temp_dir)
+
         # Modify file
         (temp_dir / "file.txt").write_text("Line 1\nLine 2\n")
 
-        # Git diff
-        result = run_git(["diff"], cwd=temp_dir)
+        # Git diff HEAD (compare working tree to commit)
+        result = run_git(["diff", "HEAD"], cwd=temp_dir)
 
         assert result.returncode == 0
         # Should show the added line

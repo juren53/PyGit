@@ -77,12 +77,17 @@ class TestRepositoryInit:
         assert desc_file.exists()
 
     @pytest.mark.unit
-    def test_init_creates_empty_index(self, temp_dir):
-        """Test that init creates empty index file."""
+    def test_init_does_not_create_index(self, temp_dir):
+        """Test that init does NOT create index file.
+
+        Index file is created on demand when files are added.
+        Creating an empty index breaks Git compatibility.
+        """
         repo = Repository.init(str(temp_dir))
         index_file = repo.git_dir / "index"
 
-        assert index_file.exists()
+        # Index should NOT exist after init (Git doesn't expect empty index)
+        assert not index_file.exists()
 
     @pytest.mark.unit
     def test_open_existing_repository(self, temp_dir):
