@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.0.3] - Wed 14 Jan 2026 06:03:27 PM CST
+
+### Fixed
+- **Index Corruption Issues:** Added robust error handling with automatic backup and recovery
+- **Windows Console Encoding:** Fixed encoding issues for Windows console output
+- **Status Display:** Improved untracked files detection and Git directory exclusion
+- **Version Display:** Fixed CLI to use dynamic package version correctly
+- **GitIgnore Patterns:** Added comprehensive Python project .gitignore support
+- **Path Handling:** Added safe path encoding for file names with special characters
+
+### Enhanced
+- **Error Recovery:** Graceful handling of corrupted index files with automatic cleanup
+- **Console Output:** Windows-compatible text encoding with error replacement
+- **Status Command:** Better separation of staged, modified, and untracked files
+
+---
+
 ## [0.0.2] - Wed 14 Jan 2026 05:22:08 PM CST
 
 ### Added
