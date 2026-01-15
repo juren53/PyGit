@@ -17,6 +17,14 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
+nul
+
+# Testing
+.hypothesis/
+.pytest_cache/
+
+# Claude Code
+.claude/
 
 # Cache and temporary files
 .ruff_cache/
